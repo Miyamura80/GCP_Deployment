@@ -22,6 +22,17 @@ check_rye:
 		rye --version; \
 	fi
 
+check_jq:
+	@echo "$(YELLOW)🔍Checking jq version...$(RESET)"
+	@if ! command -v jq > /dev/null 2>&1; then \
+		echo "$(RED)jq is not installed. Please install jq before proceeding.$(RESET)"; \
+		echo "$(RED)brew install jq$(RESET)"; \
+		exit 1; \
+	else \
+		jq --version; \
+	fi
+
+
 ########################################################
 # Setup githooks for linting
 ########################################################
@@ -89,7 +100,7 @@ destroy:
 ########################################################
 
 # Linter will ignore these directories
-IGNORE_LINT_DIRS = .venv|venv
+IGNORE_LINT_DIRS = .venv|venv|tf-cdk/node_modules
 LINE_LENGTH = 88
 
 lint: check_rye check_jq
