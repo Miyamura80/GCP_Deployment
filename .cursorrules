@@ -9,3 +9,11 @@ For reference:
 - `rye sync`: Ensure it is using the correct python venv
 - `rye run python <file_name>.py`: Run the python file using the python env defined by `pyproject.toml`
 - `rye run python -m tests.path_to.test_module` to run a specific test in isolation without running all other tests
+
+## GCP Debugging
+
+To view logs at a service:
+
+```bash
+gcloud run services logs read <SERVICE_NAME> --region <REGION>
+```
