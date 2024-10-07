@@ -73,6 +73,10 @@ run-container-local: build-container
 	docker rm $(CONTAINER_NAME) || true
 	docker run -d -p 5000:5000 --name $(CONTAINER_NAME) $(CONTAINER_NAME)
 
+########################################################
+# Terraform CDK Deployment
+########################################################
+
 deploy:
 	cd tf-cdk && cdktf deploy && cd ..
 
