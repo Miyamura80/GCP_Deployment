@@ -88,6 +88,22 @@ run-container-local: build-container
 # Terraform CDK Deployment
 ########################################################
 
+PROJECT_ID = superb-memory-392811
+DEPLOY_REGION = europe-west2
+ARTIFACT_REGISTRY = $(DEPLOY_REGION)-docker.pkg.dev/$(PROJECT_ID)/$(CONTAINER_NAME)
+
+
+full-deploy:
+	docker system prune -af  # Clean up Docker resources before building
+	docker volume prune -f
+	docker buildx create --use --name multi-arch-builder || true
+	docker buildx use multi-arch-builder
+	docker buildx build --platform linux/amd64 \
+		-t $(ARTIFACT_REGISTRY)/$(CONTAINER_NAME):latest \
+		--push \
+		.
+	cd tf-cdk && cdktf deploy && cd ..
+
 deploy:
 	cd tf-cdk && cdktf deploy && cd ..
 

@@ -1,30 +1,38 @@
 import { Construct } from "constructs";
 import { App, TerraformStack } from "cdktf";
-import { DockerProvider } from "@cdktf/provider-docker/lib/provider";
-import { Image } from "@cdktf/provider-docker/lib/image";
-import { Container } from "@cdktf/provider-docker/lib/container";
+
+// Import custom variables
+import { Variables } from "./variables";
+
+// Import Google Cloud Providers
+import { GoogleProvider } from "@cdktf/provider-google/lib/provider";
+// @ts-ignore
+import * as fs from 'fs';
+// @ts-ignore
+import * as path from 'path';
+
+// Add this import
+import { CloudRunModule } from "./modules/cloudRun";
 
 class MyStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new DockerProvider(this, "docker", {});
+    const vars = new Variables(this, "variables");
 
-    const dockerImage = new Image(this, "nginxImage", {
-      name: "nginx:latest",
-      keepLocally: false,
+    new GoogleProvider(this, "google", {
+      project: vars.project_id.value,
+      region: vars.region.value,
+      zone: vars.zone.value,
     });
 
-    new Container(this, "nginxContainer", {
-      name: "tutorial",
-      image: dockerImage.name,
-      ports: [
-        {
-          internal: 80,
-          external: 8000,
-        },
-      ],
+    // Replace the CloudRunService and CloudRunServiceIamMember with CloudRunModule
+    new CloudRunModule(this, "cloudrun", {
+      projectName: vars.project_name.value,
+      region: vars.region.value,
+      projectId: vars.project_id.value,
     });
+
   }
 }
 

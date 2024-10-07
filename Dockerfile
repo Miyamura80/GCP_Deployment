@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y curl bash
 RUN curl -sSf https://rye.astral.sh/get | RYE_INSTALL_OPTION="--yes" bash
 ENV PATH="/root/.rye/shims:$PATH"
 
-
+# Sync dependencies
 RUN rye sync
 
 # Make port 5000 available to the world outside this container
@@ -23,6 +23,7 @@ EXPOSE 5000
 
 # Define environment variable
 ENV FLASK_APP=server.py
+ENV PORT=5000
 
 # Run app.py when the container launches
 CMD ["rye", "run", "python", "server/server.py"]
