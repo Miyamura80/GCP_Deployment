@@ -13,6 +13,8 @@ import * as path from 'path';
 
 // Add this import
 import { CloudRunModule } from "./modules/cloudRun";
+// Add this new import
+import { ArtifactRegistryModule } from "./modules/artifactRegistry";
 
 class MyStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -26,13 +28,18 @@ class MyStack extends TerraformStack {
       zone: vars.zone.value,
     });
 
-    // Replace the CloudRunService and CloudRunServiceIamMember with CloudRunModule
+    // Update the ArtifactRegistryModule
+    new ArtifactRegistryModule(this, "artifact-registry", {
+      projectName: vars.project_name.value,
+      region: vars.region.value,
+    });
+
+    // Update the CloudRunModule
     new CloudRunModule(this, "cloudrun", {
       projectName: vars.project_name.value,
       region: vars.region.value,
       projectId: vars.project_id.value,
     });
-
   }
 }
 
